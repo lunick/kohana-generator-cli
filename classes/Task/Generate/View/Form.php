@@ -9,13 +9,15 @@
  *  --force=yes     default: --force=no
  *  --backup=yes    default: --backup=no
  * 
+ * adding more subdirectory
+ *  --dir=dir1/dir2/dir3
  * 
  * @author burningface
  * @license GPL 
  * @copyright (c) 2013 
  *
  */
-class Task_Generate_View_Form extends Minion_Task {
+class Task_Generate_View_Form extends Generator_Task {
     
     protected $_options = array(
         'table' => null,
@@ -25,7 +27,7 @@ class Task_Generate_View_Form extends Minion_Task {
         'backup' => 'no'
     );
           
-    protected function _execute(array $params) {
+    protected function _init(array $params) {
         $table = empty($params['table']) ? null : $params['table'];
         $all = $params['all'] == 'yes' ? true : false;
         $dir = empty($params['dir']) ? "forms" : strtolower($params['dir']).DIRECTORY_SEPARATOR."forms";
@@ -36,35 +38,22 @@ class Task_Generate_View_Form extends Minion_Task {
         {
             $tables = Database::instance()->list_tables();
             foreach ($tables as $table){
-                try{
-                    Generator_File_Writer::factory(new Generator_Item_Form($table))
-                        ->set_subdirectory($dir)
-                        ->write($force, $backup);
-                }catch(Exception $e){
-                    echo PHP_EOL.Generator_Cli_Text::text($e->getMessage(), Generator_Cli_Text::$red).PHP_EOL;
-                    Generator_Cli_Help::force($params);
-                    echo PHP_EOL;
-                }
+                $this->add(
+                        Generator_Form::factory($table)
+                            ->set_subdirectory($dir)
+                            ->write($force, $backup)
+                        );
             }
         }
         else if(!empty($table) && !$all)
         {
-            try{
-                Generator_File_Writer::factory(new Generator_Item_Form($table))
-                    ->set_subdirectory($dir)
-                    ->write($force, $backup);
-            }catch(Exception $e){
-                Generator_Cli_Help::nothing();
-                echo Generator_Cli_Text::text($e->getMessage(), Generator_Cli_Text::$red).PHP_EOL;
-                Generator_Cli_Help::force($params);
-                echo PHP_EOL;
-            }
+            $this->add(
+                    Generator_Form::factory($table)
+                        ->set_subdirectory($dir)
+                        ->write($force, $backup)
+                    );
         }
-        else
-        {
-            Generator_Cli_Help::nothing();
-            Generator_Cli_Help::options($params);
-        }
+        
     }
       
 }

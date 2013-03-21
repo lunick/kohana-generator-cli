@@ -12,44 +12,53 @@
  *  adding more action:
  *  --action=action1:action2:action3
  * 
+ * adding more subdirectory
+ *  --dir=dir1/dir2/dir3
  * 
  * @author burningface
  * @license GPL 
  * @copyright (c) 2013 
  *
  */
-class Task_Generate_Controller extends Minion_Task {
+class Task_Generate_Controller extends Generator_Task {
     
     protected $_options = array(
         'name' => null,
         'dir' => null,
         'action' => array(),
+        'views' => 'yes',
         'force' => 'no',
-        'backup' => 'no'
+        'backup' => 'no',
     );
           
-    protected function _execute(array $params) {        
+    protected function _init(array $params) {        
         $name = empty($params['name']) ? "welcome" : $params['name'];
         $dir = empty($params['dir']) ? "" : $params['dir'];
+        $views = $params['views'] == 'yes' ? true : false;
         $force = $params['force'] == 'yes' ? true : false;
         $backup = $params['backup'] == 'yes' ? true : false;
         $action = !empty($params['action']) ? array_unique(explode(':', $params['action'])) : array('index');
         
-        if(!empty($dir)){ $name = $dir."_".$name; }
+        $view_dir = !empty($dir) ? $dir.DIRECTORY_SEPARATOR.$name : $name.DIRECTORY_SEPARATOR;
         
-        try{
-            $controller = new Generator_Item_Controller($name);
-            $controller->set_actions($action);
+        $this->add(
+                Generator_Controller::factory($name)
+                    ->set_actions($action)
+                    ->set_subdirectory($dir)
+                    ->set_with_views($views)
+                    ->set_view_dir($view_dir)
+                    ->write($force, $backup)
+                );
             
-            Generator_File_Writer::factory($controller)
-                ->set_subdirectory($dir)
-                ->write($force, $backup);
-        }catch(Exception $e){
-            Generator_Cli_Help::nothing();
-            echo Generator_Cli_Text::text($e->getMessage(), Generator_Cli_Text::$red).PHP_EOL;
-            Generator_Cli_Help::force($params);
-            echo PHP_EOL;
-        }
+            if($views){
+                foreach($action as $view){
+                    $this->add(
+                            Generator_EmptyView::factory($view)
+                                ->set_subdirectory($view_dir)
+                                ->write($force, $backup)
+                            );
+                }
+            }
     }    
     
     public function build_validation(\Validation $validation) {

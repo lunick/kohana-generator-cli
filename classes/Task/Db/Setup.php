@@ -28,28 +28,23 @@ class Task_Db_Setup extends Minion_Task {
     protected function _execute(array $params) {
         $force = $params['force'] == 'yes' ? true : false;
         $backup = $params['backup'] == 'yes' ? true : false;
-        
-        $database = new Generator_Item_Database();
-        $database->set_username($params['username'])
-                ->set_password($params['password'])
-                ->set_database($params['database']);
-        
+                
         try{
-            Generator_File_Writer::factory($database)
+            Generator_Database::factory($params['username'], $params['password'], $params['database'])
                 ->write($force, $backup);
         }catch(Exception $e){
-            Generator_Cli_Help::nothing();
-            echo Generator_Cli_Text::text($e->getMessage(), Generator_Cli_Text::$red).PHP_EOL;
-            Generator_Cli_Help::force($params);
+            Cli_Help::nothing();
+            echo Cli_Text::text($e->getMessage(), Cli_Text::$red).PHP_EOL;
+            Cli_Help::force($params);
             echo PHP_EOL;
         }
         
         echo PHP_EOL;
         try {
             Database::instance()->connect();
-            echo Generator_Cli_Text::text('Connection: ok!'.PHP_EOL.PHP_EOL, Generator_Cli_Text::$green);
+            echo Cli_Text::text('Connection: ok!'.PHP_EOL.PHP_EOL, Cli_Text::$green);
         }  catch (Exception $e){
-            echo Generator_Cli_Text::text('Connection: failed!'.PHP_EOL.PHP_EOL, Generator_Cli_Text::$red);
+            echo Cli_Text::text('Connection: failed!'.PHP_EOL.PHP_EOL, Cli_Text::$red);
         }
         
     }

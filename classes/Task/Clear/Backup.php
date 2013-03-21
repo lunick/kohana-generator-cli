@@ -32,13 +32,13 @@ class Task_Clear_Backup extends Minion_Task {
           
     protected function _execute(array $params) {
         if(isset($params["dir"])){
-            Generator_Service_Backup::factory()
-                    ->delete_backup(Generator_Util_Kohana::paths_from_string($params["dir"]));
+            Cli_Service_Backup::factory()
+                    ->delete_backup(Cli_Util_System::paths_from_string($params["dir"]));
         }else{
-            Generator_Service_Backup::factory()
+            Cli_Service_Backup::factory()
                     ->delete_backup(APPPATH);
-            Generator_Service_Backup::factory()
-                    ->delete_backup(Generator_Util_Kohana::paths(Generator_Util_Kohana::$ASSETS));
+            Cli_Service_Backup::factory()
+                    ->delete_backup(Cli_Util_System::paths(Cli_Util_System::$ASSETS));
         }
     }    
     

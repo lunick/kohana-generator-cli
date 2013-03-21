@@ -9,7 +9,7 @@
 class Task_Clear_Cache extends Minion_Task {
               
     protected function _execute(array $params) {
-        Generator_Util_File::remove_all(Kohana::$cache_dir);
+        Cli_Util_File::remove_all(Kohana::$cache_dir);
     }    
     
 }

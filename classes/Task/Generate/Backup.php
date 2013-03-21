@@ -24,24 +24,30 @@
  * @copyright (c) 2013 
  *
  */
-class Task_Generate_Backup extends Minion_Task {
+class Task_Generate_Backup extends Generator_Task {
     
     protected $_options = array(
         'dir' => null
     );
           
-    protected function _execute(array $params) {
+    protected function _init(array $params) {
         if(!empty($params["dir"]))
         {
-            Generator_Service_Backup::factory()
-                    ->make_backup(Generator_Util_Kohana::paths_from_string($params["dir"]));
+            $this->result->add_generated_backups(
+                        Cli_Service_Backup::factory()
+                            ->make_backup(Cli_Util_System::paths_from_string($params["dir"]))
+                    );
         }
         else
         {
-            Generator_Service_Backup::factory()
-                    ->make_backup(APPPATH);
-            Generator_Service_Backup::factory()
-                    ->make_backup(Generator_Util_Kohana::paths(Generator_Util_Kohana::$ASSETS));
+            $this->result->add_generated_backups(
+                        Cli_Service_Backup::factory()
+                            ->make_backup(APPPATH)
+                    );
+            $this->result->add_generated_backups(
+                        Cli_Service_Backup::factory()
+                            ->make_backup(Cli_Util_System::paths(Cli_Util_System::$ASSETS))
+                    );
         }
     }    
     

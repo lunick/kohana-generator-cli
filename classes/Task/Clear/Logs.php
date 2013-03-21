@@ -9,7 +9,7 @@
 class Task_Clear_Logs extends Minion_Task {
               
     protected function _execute(array $params) {
-        Generator_Util_File::remove_all(Generator_Util_Kohana::paths(Generator_Util_Kohana::$LOGS));
+        Cli_Util_File::remove_all(Cli_Util_System::paths(Cli_Util_System::$LOGS));
     }    
     
 }

@@ -10,13 +10,15 @@
  *  --force=yes     default: --force=no
  *  --backup=yes    default: --backup=no
  * 
+ * adding more subdirectory
+ *  --dir=dir1/dir2/dir3
  * 
  * @author burningface
  * @license GPL 
  * @copyright (c) 2013 
  *
  */
-class Task_Generate_Crud extends Minion_Task {
+class Task_Generate_Crud extends Generator_Task {
 
     protected $_options = array(
         'table' => null,
@@ -26,10 +28,10 @@ class Task_Generate_Crud extends Minion_Task {
         'backup' => 'no'
     );
 
-    protected function _execute(array $params) {
+    protected function _init(array $params) {
         $table = empty($params['table']) ? null : $params['table'];
         $all = $params['all'] == 'yes' ? true : false;
-        $dir = empty($params['dir']) ? null : strtolower($params['dir']);
+        $dir = empty($params['dir']) ? null : $params['dir'];
         $force = $params['force'] == 'yes' ? true : false;
         $backup = $params['backup'] == 'yes' ? true : false;
         
@@ -37,42 +39,21 @@ class Task_Generate_Crud extends Minion_Task {
         {
             $tables = Database::instance()->list_tables();
             foreach ($tables as $table){
-                try{
-                    $crud_controller = new Generator_Item_Crud($table);
-                    $crud_controller->set_subdirectory($dir);
-                    
-                    Generator_File_Writer::factory($crud_controller)
-                        ->set_subdirectory($dir)
-                        ->write($force, $backup);
-                }catch(Exception $e){
-                    echo PHP_EOL.Generator_Cli_Text::text($e->getMessage(), Generator_Cli_Text::$red).PHP_EOL;
-                    Generator_Cli_Help::force($params);
-                    echo PHP_EOL;
-                }
+                $this->add(
+                        Generator_Crud::factory($table)
+                            ->set_subdirectory($dir)                   
+                            ->write($force, $backup)
+                    );
             }
         }
         else if(!empty($table) && !$all)
         {
-            try{
-                $crud_controller = new Generator_Item_Crud($table);
-                    $crud_controller->set_subdirectory($dir);
-                    
-                    Generator_File_Writer::factory($crud_controller)
-                        ->set_subdirectory($dir)
-                        ->write($force, $backup);
-            }catch(Exception $e){
-                Generator_Cli_Help::nothing();
-                echo Generator_Cli_Text::text($e->getMessage(), Generator_Cli_Text::$red).PHP_EOL;
-                Generator_Cli_Help::force($params);
-                echo PHP_EOL;
-            }
-        }
-        else
-        {
-            Generator_Cli_Help::nothing();
-            Generator_Cli_Help::options($params);
-        }
-        
+            $this->add(
+                    Generator_Crud::factory($table)
+                        ->set_subdirectory($dir)                   
+                        ->write($force, $backup)
+                    );
+        }        
     }
 
 }

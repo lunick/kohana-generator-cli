@@ -8,13 +8,15 @@
  *  --force=yes     default: --force=no
  *  --backup=yes    default: --backup=no
  * 
+ * adding more subdirectory
+ *  --dir=dir1/dir2/dir3
  * 
  * @author burningface
  * @license GPL 
  * @copyright (c) 2013 
  *
  */
-class Task_Generate_View_Template extends Minion_Task {
+class Task_Generate_View_Template extends Generator_Task {
 
     protected $_options = array(
         'name' => null,
@@ -23,22 +25,17 @@ class Task_Generate_View_Template extends Minion_Task {
         'backup' => 'no'
     );
 
-    protected function _execute(array $params) {        
+    protected function _init(array $params) {        
         $name = empty($params['name']) ? "template" : $params['name'];
         $dir = empty($params['dir']) ? "templates" : $params['dir'];
         $force = $params['force'] == 'yes' ? true : false;
         $backup = $params['backup'] == 'yes' ? true : false;
         
-        try{
-            Generator_File_Writer::factory(new Generator_Item_Template($name))
-                ->set_subdirectory($dir)
-                ->write($force, $backup);
-        }catch(Exception $e){
-            Generator_Cli_Help::nothing();
-            echo Generator_Cli_Text::text($e->getMessage(), Generator_Cli_Text::$red).PHP_EOL;
-            Generator_Cli_Help::force($params);
-            echo PHP_EOL;
-        }
+        $this->add(
+                Generator_Template::factory($name)
+                    ->set_subdirectory($dir)
+                    ->write($force, $backup)
+                );
     }
 
 }
