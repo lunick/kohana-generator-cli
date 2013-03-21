@@ -41,10 +41,8 @@ class Task_Generate_Assets extends Generator_Task {
                     ->write($force, $backup)
                 );
             
-        $this->add(
-                Cli_Service_Dir::factory()
-                    ->mkdir("assets" . DIRECTORY_SEPARATOR . "img")
-                );
+       Cli_Service_Dir::factory()
+            ->mkdir("assets" . DIRECTORY_SEPARATOR . "img");
           
     }
 

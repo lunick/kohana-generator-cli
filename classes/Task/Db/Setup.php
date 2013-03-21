@@ -15,7 +15,7 @@
  * @copyright (c) 2013 
  *
  */
-class Task_Db_Setup extends Minion_Task {
+class Task_Db_Setup extends Generator_Task {
 
     protected $_options = array(
         'username' => null,
@@ -25,19 +25,14 @@ class Task_Db_Setup extends Minion_Task {
         'backup' => 'no'
     );
 
-    protected function _execute(array $params) {
+    protected function _init(array $params) {
         $force = $params['force'] == 'yes' ? true : false;
         $backup = $params['backup'] == 'yes' ? true : false;
                 
-        try{
-            Generator_Database::factory($params['username'], $params['password'], $params['database'])
-                ->write($force, $backup);
-        }catch(Exception $e){
-            Cli_Help::nothing();
-            echo Cli_Text::text($e->getMessage(), Cli_Text::$red).PHP_EOL;
-            Cli_Help::force($params);
-            echo PHP_EOL;
-        }
+        $this->add(
+                Generator_Database::factory($params['username'], $params['password'], $params['database'])
+                    ->write($force, $backup)
+                );
         
         echo PHP_EOL;
         try {
