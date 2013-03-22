@@ -10,6 +10,7 @@ class Cli_Generator_Item_I18n extends Cli_Generator_Abstract_Generator_Item {
     
     public function init() {
         $tables = Database::instance()->list_tables();
+        $driver = Cli_Database_Mysql_Driver::factory();
         
         $this->setup(Cli_Util_System::$I18n)
                 ->add_row("return array(")
@@ -25,10 +26,9 @@ class Cli_Generator_Item_I18n extends Cli_Generator_Abstract_Generator_Item {
         
         foreach ($tables as $table) {
 
-            $db_table = Cli_Generator_Database_Table::factory($table);
-            $fields = $db_table->get_table_fields();
+            $fields = $driver->columns_result($table);
             
-            $name = $db_table->get_name();
+            $name = $driver->name($table);
 
             foreach ($fields as $field) {
                 $this->add_row("'" . $name . "." . $field->get_name() . "' => '" . Cli_Util_Text::upper_first($field->get_name()) . "',", 4);

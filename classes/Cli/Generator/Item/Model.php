@@ -13,7 +13,8 @@ class Cli_Generator_Item_Model extends Cli_Generator_Abstract_Generator_Item {
     }
     
     public function init() { 
-        $class_name = Cli_Util_Text::class_name($this->db_table->get_name());
+        $orm = Cli_Database_Orm::factory($this->table);
+        $class_name = Cli_Util_Text::class_name($orm->get_name());
         
         $this->setup(Cli_Util_System::$MODEL)
                 ->add_row("class Model_" . $class_name . " extends Model {")

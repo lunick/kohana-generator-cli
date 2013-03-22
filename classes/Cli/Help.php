@@ -56,8 +56,8 @@ class Cli_Help {
         $max_space = (2 * $space) + $num;
         
         echo PHP_EOL;
-        echo Cli_Util_Text::space(5);     
-        echo Cli_Text::text($head_string.":", Cli_Text::$yellow).PHP_EOL;
+        //echo Cli_Util_Text::space(5);     
+        echo Cli_Text::text($head_string.":", Cli_Text::$green).PHP_EOL;
         
         self::print_table_top($max_space);
         foreach ($tables as $table){
@@ -70,30 +70,30 @@ class Cli_Help {
     
     private static function print_table_line($text, $left, $right){
         $right = $right - 1;
-        echo Cli_Util_Text::space(5);
-        echo Cli_Text::text('|', Cli_Text::$yellow);
-        echo Cli_Util_Text::space(($left)).$text.Cli_Util_Text::space(($right));
-        echo Cli_Text::text('|', Cli_Text::$yellow).PHP_EOL;
+        //echo Cli_Util_Text::space(5);
+        echo Cli_Text::text('|', Cli_Text::$blue);
+        echo Cli_Util_Text::space(($left)).Cli_Text::text($text, Cli_Text::$green).Cli_Util_Text::space(($right));
+        echo Cli_Text::text('|', Cli_Text::$blue).PHP_EOL;
     }
     
     private static function print_table_top($num){
         $num = ($num-2);
-        echo Cli_Util_Text::space(5);
-        echo Cli_Text::text('+', Cli_Text::$yellow);
+        //echo Cli_Util_Text::space(5);
+        echo Cli_Text::text('+', Cli_Text::$blue);
         for($i = 0; $i <= $num; ++$i){
-            echo Cli_Text::text('-', Cli_Text::$yellow);
+            echo Cli_Text::text('-', Cli_Text::$blue);
         }
-        echo Cli_Text::text('+', Cli_Text::$yellow).PHP_EOL;
+        echo Cli_Text::text('+', Cli_Text::$blue).PHP_EOL;
     }
     
     private static function print_table_bottom($num){
         $num = ($num-2);
-        echo Cli_Util_Text::space(5);
-        echo Cli_Text::text('+', Cli_Text::$yellow);
+        //echo Cli_Util_Text::space(5);
+        echo Cli_Text::text('+', Cli_Text::$blue);
         for($i = 0; $i <= $num; ++$i){
-            echo Cli_Text::text('-', Cli_Text::$yellow);
+            echo Cli_Text::text('-', Cli_Text::$blue);
         }
-        echo Cli_Text::text('+', Cli_Text::$yellow).PHP_EOL;
+        echo Cli_Text::text('+', Cli_Text::$blue).PHP_EOL;
     }
     
     public static function print_line($length = 20, $color=null){

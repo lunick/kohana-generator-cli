@@ -13,9 +13,11 @@ class Cli_Generator_Item_Show extends Cli_Generator_Abstract_Generator_Item {
     }
     
     public function init() {
-        $fields = $this->db_table->get_table_fields();
-        $name = $this->db_table->get_name();
-        $pkn = $this->db_table->get_primary_key_name();
+        $driver = Cli_Database_Mysql_Driver::factory();
+        $fields = $driver->columns_result($this->table);
+        $name = $driver->name($this->table);
+        $primary_keys = $driver->get_primary_key_names($this->table);
+        $pkn = isset($primary_keys[0]) ? $primary_keys[0] : "id";
         
         if(!empty($pkn))
         {            

@@ -12,7 +12,7 @@
  * @copyright (c) 2013 
  *
  */
-class Task_Generate_Assets extends Generator_Task {
+class Task_Generate_Asset extends Generator_Task {
 
     protected $_options = array(
         'force' => 'no',

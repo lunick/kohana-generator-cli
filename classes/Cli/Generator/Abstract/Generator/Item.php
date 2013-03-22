@@ -9,7 +9,6 @@
  */
 abstract class Cli_Generator_Abstract_Generator_Item {
 
-    protected $db_table;
     protected $table;
     private $rows = array();
     private $error;
@@ -22,7 +21,6 @@ abstract class Cli_Generator_Abstract_Generator_Item {
     private $upper_first = false;
 
     public function __construct($filename = null, $table = null) {
-        $this->db_table = !empty($table) ? Cli_Generator_Database_Table::factory($table) : null;
         $this->filename = $filename;
         $this->table = $table;
     }
@@ -146,15 +144,19 @@ abstract class Cli_Generator_Abstract_Generator_Item {
     }
 
     public function init_name() {
-        if (!empty($this->filename)) {
+        if (!empty($this->filename)) 
+        {
             $name = $this->upper_first() ? Cli_Util_Text::upper_first_file_name($this->filename) : Cli_Util_Text::lower_file_name($this->filename);
             $this->set_filename($name);
-        } else if (empty($this->filename) && !empty($this->table)) {
-            if ($this->db_table instanceof Cli_Generator_Database_Table) {
-                $name = $this->upper_first() ? Cli_Util_Text::upper_first_file_name($this->db_table->get_name()) : Cli_Util_Text::lower_file_name($this->db_table->get_name());
-                $this->set_filename($name);
-            }
-        } else {
+        }
+        else if (empty($this->filename) && !empty($this->table)) 
+        {
+            $driver = Cli_Database_Mysql_Driver::factory();
+            $name = $this->upper_first() ? Cli_Util_Text::upper_first_file_name($driver->name($this->table)) : Cli_Util_Text::lower_file_name($driver->name($this->table));
+            $this->set_filename($name);
+        } 
+        else 
+        {
             throw new Exception("Empty filename and table name!");
         }
     }

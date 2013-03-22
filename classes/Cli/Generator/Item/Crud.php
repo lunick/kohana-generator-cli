@@ -14,20 +14,23 @@ class Cli_Generator_Item_Crud extends Cli_Generator_Abstract_Generator_Item {
     }
     
     public function init() {
+        $driver = Cli_Database_Mysql_Driver::factory();
+        $name = $driver->name($this->table);
+        
         $subdirectory = $this->get_subdirectory();
-        $route = $subdirectory == null ? $this->db_table->get_name() : Cli_Util_Text::dir_separator_normalize_lowercase($subdirectory.DIRECTORY_SEPARATOR.$this->db_table->get_name());
+        $route = $subdirectory == null ? $name : Cli_Util_Text::dir_separator_normalize_lowercase($subdirectory.DIRECTORY_SEPARATOR.$name);
         $path = $subdirectory == null ? "" : Cli_Util_Text::dir_separator_normalize_lowercase($subdirectory).DIRECTORY_SEPARATOR;
-        $filename = $subdirectory == null ? $this->db_table->get_name() : Cli_Util_Text::dir_separator_normalize_lowercase($subdirectory.DIRECTORY_SEPARATOR.$this->db_table->get_name());
+        $filename = $subdirectory == null ? $name : Cli_Util_Text::dir_separator_normalize_lowercase($subdirectory.DIRECTORY_SEPARATOR.$name);
                 
         $this->setup(Cli_Util_System::$CONTROLLER)
                 ->add_row("class Controller_" . Cli_Util_Text::class_name($filename) . " extends Controller_Template {")
                 ->add_row()
                 ->add_row("public \$template = 'templates/template';", 4)
                 ->add_row()
-                ->add_row("protected \$_model = '" . Cli_Util_Text::name($this->db_table->get_name()) . "';", 4)
-                ->add_row("protected \$_form_view = '".$path."forms/" . $this->db_table->get_name() . "';", 4)
-                ->add_row("protected \$_show_view = '".$path."shows/" . $this->db_table->get_name() . "';", 4)
-                ->add_row("protected \$_list_view = '".$path."lists/" . $this->db_table->get_name() . "';", 4)
+                ->add_row("protected \$_model = '" . Cli_Util_Text::name($name) . "';", 4)
+                ->add_row("protected \$_form_view = '".$path."forms/" . $name . "';", 4)
+                ->add_row("protected \$_show_view = '".$path."shows/" . $name . "';", 4)
+                ->add_row("protected \$_list_view = '".$path."lists/" . $name . "';", 4)
                 ->add_row("protected \$_route = '/" . $route . "';", 4)
                 ->add_row("protected \$_action_index = '/" . $route . "';", 4)
                 ->add_row("protected \$_action_new = '/" . $route ."/new';", 4)
@@ -54,12 +57,10 @@ class Cli_Generator_Item_Crud extends Cli_Generator_Abstract_Generator_Item {
                 ->add_row("\$form = View::factory(\$this->_form_view);", 8)
                 ->add_row("\$form->route = \$this->_route;", 8);
                         
-        foreach ($this->db_table->get_table_fields() as $field) {
-
-            if ($field->is_foreign_key()) {
-                $this->add_row("\$form->" . $field->get_name() . " = ORM::factory('" . Cli_Util_Text::name($this->db_table->get_referenced_table_name($field->get_name())) . "')->find_all()->as_array('" . $this->db_table->get_primary_key_name() . "', '" . $this->db_table->get_primary_key_name() . "');", 8);
-            }
-            
+        foreach ($driver->relationship_result($this->table) as $field) {
+            $primary_keys = $driver->get_primary_key_names($this->table);
+            $primary_key = isset($primary_keys[0]) ? $primary_keys[0] : "id"; 
+            $this->add_row("\$form->" . $field->get_column_name() . " = ORM::factory('" . Cli_Util_Text::name($driver->name($driver->get_referenced_table_name($this->table, $field->get_column_name()))) . "')->find_all()->as_array('" . $primary_key . "', '" . $primary_key . "');", 8);
         }
 
         $this->add_row("\$form->action = \$this->_action_new;", 8)
@@ -95,11 +96,10 @@ class Cli_Generator_Item_Crud extends Cli_Generator_Abstract_Generator_Item {
                 ->add_row("\$form = View::factory(\$this->_form_view);", 12)
                 ->add_row("\$form->route = \$this->_route;", 12);
 
-        foreach ($this->db_table->get_table_fields() as $field) {
-
-            if ($field->is_foreign_key()) {
-                $this->add_row("\$form->" . $field->get_name() . " = ORM::factory('" . Cli_Util_Text::name($this->db_table->get_referenced_table_name($field->get_name())) . "')->find_all()->as_array('" . $this->db_table->get_primary_key_name() . "', '" . $this->db_table->get_primary_key_name() . "');", 12);
-            }
+        foreach ($driver->relationship_result($this->table) as $field) {
+            $primary_keys = $driver->get_primary_key_names($this->table);
+            $primary_key = isset($primary_keys[0]) ? $primary_keys[0] : "id"; 
+            $this->add_row("\$form->" . $field->get_column_name() . " = ORM::factory('" . Cli_Util_Text::name($driver->name($driver->get_referenced_table_name($this->table, $field->get_column_name()))) . "')->find_all()->as_array('" . $primary_key . "', '" . $primary_key . "');", 12);
         }
 
         $this->add_row("\$form->action = \$this->_action_edit.'/'.\$id;", 12)

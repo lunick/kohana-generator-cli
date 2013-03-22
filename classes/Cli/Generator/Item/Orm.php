@@ -13,8 +13,8 @@ class Cli_Generator_Item_Orm extends Cli_Generator_Abstract_Generator_Item {
     }
     
     public function init() {
-        $orm = Cli_Generator_Database_Orm::factory($this->db_table); 
-        $class_name = Cli_Util_Text::class_name($this->db_table->get_name());
+        $orm = Cli_Database_Orm::factory($this->table);
+        $class_name = Cli_Util_Text::class_name($orm->get_name());
         
         $this->setup(Cli_Util_System::$MODEL)
                 ->add_row("class Model_" . $class_name . " extends ORM {")
@@ -24,7 +24,7 @@ class Cli_Generator_Item_Orm extends Cli_Generator_Abstract_Generator_Item {
         {
             if(Cli_Util_ConfigReader::get_key("table_names_plural") === false)
             {
-                $this->add_row("protected \$_table_name = "."'".UTF8::strtolower($this->db_table->get_name())."'".";", 4)
+                $this->add_row("protected \$_table_name = "."'".UTF8::strtolower($this->table)."'".";", 4)
                         ->add_row();
             }
         }  
@@ -32,13 +32,22 @@ class Cli_Generator_Item_Orm extends Cli_Generator_Abstract_Generator_Item {
         {
             if(Cli_Service_AutoDetect::table_names_plural() === false)
             {
-                $this->add_row("protected \$_table_name = "."'".UTF8::strtolower($this->db_table->get_name())."'".";", 4)
+                $this->add_row("protected \$_table_name = "."'".UTF8::strtolower($this->table)."'".";", 4)
                         ->add_row();
             }
         }
        
-        $this->add_row($orm->get_relation_ships())
-                ->add_row($orm->get_rules())
+        if($orm->has_one_and_belongs_to())
+        {
+            $this->add_row($orm->get_has_one())
+                 ->add_row($orm->get_belongs_to());
+        }
+        if($orm->has_many())
+        {
+            $this->add_row($orm->get_has_many());
+        }
+        
+        $this->add_row($orm->get_rules())
                 ->add_row($orm->get_filters())
                 ->add_row($orm->get_labels())
                 ->add_row("}")

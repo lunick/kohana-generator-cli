@@ -32,12 +32,15 @@ class Task_Generate_Orm extends Generator_Task {
         if($all && empty($table))
         {
             $tables = Database::instance()->list_tables();
+            $driver = Cli_Database_Mysql_Driver::factory();
             foreach ($tables as $table){
-                $this->add(
-                        Generator_Orm::factory($table)
-                            ->write($force, $backup)
-                        );
-            }
+                if(!$driver->is_switch_table($table)){
+                    $this->add(
+                            Generator_Orm::factory($table)
+                                ->write($force, $backup)
+                            );
+                    }
+                }
         }
         else if(!empty($table) && !$all)
         {
