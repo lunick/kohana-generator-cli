@@ -6,7 +6,7 @@
  * @copyright (c) 2013 
  *
  */
-class Cli_Util_ConfigReader {
+final class Cli_Util_ConfigReader {
     
     public static function get_key($key){
          return self::get_config()->{$key};

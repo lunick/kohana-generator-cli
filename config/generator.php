@@ -11,17 +11,15 @@ return array(
     "datetime_format" => "Y-m-d H:i:s",
     "backup_datetime_format" => "Y.m.d.H.i.s",
     
-    "chmod" => 0777,
-    
-    //downloads options
-    "jquery_url" => "http://code.jquery.com/jquery-latest.min.js",
-    "reset_css_url" => "http://meyerweb.com/eric/tools/css/reset/reset.css",
-    "kube_css_framework_url" => "http://imperavi.com/webdownload/kube/get/",
-    "kube_min_css_zip_path" => "kube101/css/kube.min.css",
-    "kube_master_zip_path" => "kube101/css/master.css",
-   
     "start_php_file" => "<?php defined('SYSPATH') or die('No direct script access.') ?>",
-      
+    
+    //disabled tables
+    "disabled_tables" => array("user_tokens", "roles_users", "roles", "users"),
+    
+    //downloads
+    "jquery_url" => "http://code.jquery.com/jquery-latest.min.js",    
+    "bootstrap_url" => "http://twitter.github.com/bootstrap/assets/bootstrap.zip",
+   
     "validation" => array(
         "alpha"                 => ":field must contain only letters",
         "alpha_dash"            => ":field must contain only numbers, letters and dashes",

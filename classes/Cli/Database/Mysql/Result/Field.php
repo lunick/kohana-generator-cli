@@ -6,7 +6,7 @@
  * @copyright (c) 2013 
  *
  */
-class Cli_Database_Mysql_Result_Field {
+final class Cli_Database_Mysql_Result_Field implements Cli_Database_Interface_Result_Field {
 
     private $field;
 
@@ -14,14 +14,18 @@ class Cli_Database_Mysql_Result_Field {
         $this->field = $field;
     }
 
-    public static function factory($field){
-        return new Cli_Database_Mysql_Result_Field($field);
-    }
-
+    /**
+     * 
+     * @return int
+     */
     public function get_min(){
         return isset($this->field["min"]) ? $this->field["min"] : 0;
     }
 
+    /**
+     * 
+     * @return int
+     */
     public function get_max(){
         if (isset($this->field["max"])) 
         {
@@ -37,26 +41,50 @@ class Cli_Database_Mysql_Result_Field {
         }
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function get_type(){
         return isset($this->field["data_type"]) ? $this->field["data_type"] : "";
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function get_name(){
         return isset($this->field["column_name"]) ? $this->field["column_name"] : "";
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function get_key(){
         return isset($this->field["key"]) ? $this->field["key"] : "";
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public function is_primary_key(){
         return $this->get_key() == "PRI" ? true : false;
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public function is_foreign_key(){
         return $this->get_key() == "MUL" ? true : false;
     }
 
+    /**
+     * 
+     * @return array
+     */
     public function field(){
         return $this->field;
     }

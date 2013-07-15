@@ -1,106 +1,190 @@
 <?php defined('SYSPATH') or die('No direct script access.') ?>
 <?php
-
 /**
+ * 
  * @author burningface
  * @license GPL 
  * @copyright (c) 2013 
  *
  */
-class Cli_Help {
-
-    public static function tables($table_name) {
-        $tables = Database::instance()->list_tables();
-        echo PHP_EOL;
-        echo Cli_Text::text('Table: ' . $table_name . ' doesn\'t exists!', Cli_Text::$red) . PHP_EOL;
-        echo Cli_Text::text('Choose one from this list:', Cli_Text::$green) . PHP_EOL;
-        self::print_tables($tables);
-    }
+final class Cli_Help {
     
-    public static function options(array $options){
-        echo PHP_EOL;
-        echo Cli_Text::text('It can accept the following options:'.PHP_EOL, Cli_Text::$brown);
-        foreach ($options as $key => $val){
-            echo Cli_Text::text('--'.$key.'=param'.PHP_EOL, Cli_Text::$brown);
-        }
-        echo PHP_EOL;
-    }
-    
-    public static function force(array $options){
-        echo PHP_EOL;
-        echo Cli_Text::text('Try --force=yes option.'.PHP_EOL,Cli_Text::$green);
-        echo Cli_Text::text('More options:'.PHP_EOL, Cli_Text::$brown);
-        foreach ($options as $key => $val){
-            echo Cli_Text::text('--'.$key.'=param'.PHP_EOL, Cli_Text::$brown);
-        }
-        echo PHP_EOL;
-    }
-    
-    public static function nothing(){
-        echo PHP_EOL;
-        echo Cli_Text::text('We did nothing!', Cli_Text::$green);
+    public static function box($string){
+        $string = $string;
+        $line = '+'.char('-', mb_strlen($string)+2).'+';
+        return $line.PHP_EOL."| ".$string." |".PHP_EOL.$line;
     }
 
-    public static function print_tables(array $tables){
-        $head_string = 'Tables in your Database';
-        $head_string_length = strlen($head_string);
-        $num = $head_string_length;
-        $space = 10;
-        
-        foreach ($tables as $table){
-            $tnum = strlen($table);
-            if($num <= $tnum){
-                $num = $tnum;
+    public static function directory_helper(){
+        $string = infoline('+----------------------------------------------------------------------+').PHP_EOL;
+        $string .= infoline('| In this case you can use number as alias when console ask directory: |').PHP_EOL;
+        $string .= infoline('+----------------------------------------------------------------------+').PHP_EOL;
+        $string .= infoline("controller: ");
+        $string .= paramline(CONTROLLER).PHP_EOL;
+        $string .= infoline("model: ");
+        $string .= paramline(MODEL).PHP_EOL;
+        $string .= infoline("views: ");
+        $string .= paramline(VIEWS).PHP_EOL;
+        $string .= infoline("js: ");
+        $string .= paramline(JS).PHP_EOL;
+        $string .= infoline("css: ");
+        $string .= paramline(CSS).PHP_EOL;
+        $string .= infoline("img: ");
+        $string .= paramline(IMG).PHP_EOL;
+        $string .= infoline("assets: ");
+        $string .= paramline(ASSETS).PHP_EOL;
+        $string .= infoline("i18n: ");
+        $string .= paramline(I18N).PHP_EOL;
+        $string .= infoline("config: ");
+        $string .= paramline(CONFIG).PHP_EOL;
+        $string .= infoline("messages: ");
+        $string .= paramline(MESSAGES).PHP_EOL;
+        $string .= infoline("logs: ");
+        $string .= paramline(LOGS).PHP_EOL;
+        return $string;
+    }
+    
+    public static function deleted(array $files){
+        if(!empty($files))
+        {
+            foreach ($files as $file){
+                print_info("Deleted: ");
+                println_param(clean_path($file));
             }
         }
-        $max_space = (2 * $space) + $num;
+    }
+    
+    public static function generated(array $files){
+        if(!empty($files))
+        {
+            foreach ($files as $file){
+                print_info("Generated: ");
+                println_param(clean_path($file));
+            }
+        }
+    }
         
-        echo PHP_EOL;
-        //echo Cli_Util_Text::space(5);     
-        echo Cli_Text::text($head_string.":", Cli_Text::$green).PHP_EOL;
-        
-        self::print_table_top($max_space);
+    public static function print_dbtables(){
+        $tables = Database::instance()->list_tables();
+        $string = lang(array("tables_in_database")).":";
+        $string_length = $width = mb_strlen($string)+2;
+        $longest = 0;
         foreach ($tables as $table){
-            $right = (($max_space - $space) - strlen($table));
-            self::print_table_line($table, $space, $right);
+            $length = mb_strlen($table)+1;
+            if($longest < $length)
+            {
+                $longest = $length;
+            }
         }
-        self::print_table_bottom($max_space);
+        
+        if($width < $longest){ $width = $longest; }
+        
+        $lines = char("-", $width);
+        $empty = space($width - $string_length);
+        $head = '+'.$lines.'+'.PHP_EOL.'| '.$string.$empty.' |'.PHP_EOL.'+'.$lines.'+';
+        
+        println_info($head);
+        foreach ($tables as $table){
+            print_info("| ");
+            print_param($table);
+            $empty = space($width - mb_strlen($table)-1);
+            println_info($empty."|");
+        }
+        println_info('+'.$lines.'+');
+    }
+    
+    public static function check_dbconnection(){
+        echo PHP_EOL;
+        try {
+            Database::instance()->connect();
+            println_info(Cli_Help::box('Connection: ok!'));
+            println_info();
+        }  catch (Exception $e){
+            println_error(Cli_Help::box('Connection: failed!'));
+            println_info();
+        }
+    }
+    
+    public static function clear_cache(){
+        Cli_Help::deleted(remove_all(cache_dir()));
+    }
+    
+    public static function clear_log(){
+        Cli_Help::deleted(remove_all(logs_dir()));
+    }
+    
+    public static function print_help($key=null){
+        $register = Generator_Register::get_register();
+        if($key == null)
+        {
+            foreach ($register as $key => $array){
+                $info = lang(array($key));
+                if(!empty($info))
+                {
+                    println_info(Cli_Help::box($info));
+                    print_info(lang(array("use")).": ");
+                    echo paramline("g ".$key).PHP_EOL;
+                }
+
+                $class = Generator_Register::get_class($key);
+                if($class !== false)
+                {
+                    $class = new $class;
+                    if($class instanceof Cli_Generator_Interface_Help)
+                    {
+                        $string = $class->help();
+                        if($string)
+                        {
+                            echo $string;
+                        }                    
+                    }
+                }
+                println_info();
+            }
+        }
+        else
+        {
+            if(Generator_Register::command_exists($key)){
+                $info = lang(array($key));
+                if(!empty($info))
+                {
+                    println_info(Cli_Help::box($info));
+                    print_info(lang(array("use")).": ");
+                    echo paramline("g ".$key).PHP_EOL;
+                }
+
+                $class = Generator_Register::get_class($key);
+                if($class !== false)
+                {
+                    $class = new $class;
+                    if($class instanceof Cli_Generator_Interface_Help)
+                    {
+                        $string = $class->help();
+                        if($string){
+                            echo $string;
+                        }                    
+                    }
+                    println_info();
+                }
+            }
+            else
+            {
+                println_error("This command ".$key." not available!");
+            }
+        }
         
     }
     
-    private static function print_table_line($text, $left, $right){
-        $right = $right - 1;
-        //echo Cli_Util_Text::space(5);
-        echo Cli_Text::text('|', Cli_Text::$blue);
-        echo Cli_Util_Text::space(($left)).Cli_Text::text($text, Cli_Text::$green).Cli_Util_Text::space(($right));
-        echo Cli_Text::text('|', Cli_Text::$blue).PHP_EOL;
-    }
-    
-    private static function print_table_top($num){
-        $num = ($num-2);
-        //echo Cli_Util_Text::space(5);
-        echo Cli_Text::text('+', Cli_Text::$blue);
-        for($i = 0; $i <= $num; ++$i){
-            echo Cli_Text::text('-', Cli_Text::$blue);
+    public static function print_commands(){
+        $register = Generator_Register::get_register();
+        foreach ($register as $key => $array){
+            $info = lang(array($key));
+            if(!empty($info))
+            {
+                print_info($info.": ");
+                echo paramline("php index.php g ".$key).PHP_EOL;
+            }
         }
-        echo Cli_Text::text('+', Cli_Text::$blue).PHP_EOL;
-    }
-    
-    private static function print_table_bottom($num){
-        $num = ($num-2);
-        //echo Cli_Util_Text::space(5);
-        echo Cli_Text::text('+', Cli_Text::$blue);
-        for($i = 0; $i <= $num; ++$i){
-            echo Cli_Text::text('-', Cli_Text::$blue);
-        }
-        echo Cli_Text::text('+', Cli_Text::$blue).PHP_EOL;
-    }
-    
-    public static function print_line($length = 20, $color=null){
-        for($i = 0; $i < $length; $i++){
-            echo Cli_Text::text("-", $color);
-        }
-        echo PHP_EOL;
     }
 }
 
