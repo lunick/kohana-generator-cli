@@ -16,9 +16,7 @@ final class Cli_Help {
     }
 
     public static function directory_helper(){
-        $string = infoline('+----------------------------------------------------------------------+').PHP_EOL;
-        $string .= infoline('| In this case you can use number as alias when console ask directory: |').PHP_EOL;
-        $string .= infoline('+----------------------------------------------------------------------+').PHP_EOL;
+        $string = infoline(self::box(lang("dir_alias"))).PHP_EOL;
         $string .= infoline("controller: ");
         $string .= paramline(CONTROLLER).PHP_EOL;
         $string .= infoline("model: ");
@@ -114,43 +112,16 @@ final class Cli_Help {
     }
     
     public static function print_help($key=null){
-        $register = Generator_Register::get_register();
-        if($key == null)
+        if($key != null)
         {
-            foreach ($register as $key => $array){
-                $info = lang(array($key));
-                if(!empty($info))
-                {
-                    println_info(Cli_Help::box($info));
-                    print_info(lang(array("use")).": ");
-                    echo paramline("g ".$key).PHP_EOL;
-                }
-
-                $class = Generator_Register::get_class($key);
-                if($class !== false)
-                {
-                    $class = new $class;
-                    if($class instanceof Cli_Generator_Interface_Help)
-                    {
-                        $string = $class->help();
-                        if($string)
-                        {
-                            echo $string;
-                        }                    
-                    }
-                }
-                println_info();
-            }
-        }
-        else
-        {
+            println_info();
             if(Generator_Register::command_exists($key)){
                 $info = lang(array($key));
                 if(!empty($info))
                 {
                     println_info(Cli_Help::box($info));
                     print_info(lang(array("use")).": ");
-                    echo paramline("g ".$key).PHP_EOL;
+                    echo paramline("php index.php g ".$key).PHP_EOL;
                 }
 
                 $class = Generator_Register::get_class($key);
@@ -164,28 +135,33 @@ final class Cli_Help {
                             echo $string;
                         }                    
                     }
-                    println_info();
                 }
             }
             else
             {
                 println_error("This command ".$key." not available!");
             }
+            println_info();
         }
         
     }
     
     public static function print_commands(){
         $register = Generator_Register::get_register();
+        $more_info = lang("more_info");
         foreach ($register as $key => $array){
             $info = lang(array($key));
             if(!empty($info))
             {
                 print_info($info.": ");
                 echo paramline("php index.php g ".$key).PHP_EOL;
+                print_info($more_info.": ");
+                echo paramline("php index.php command ".$key).PHP_EOL;
+                println_param(char("-", 60));
             }
         }
     }
+    
 }
 
 ?>

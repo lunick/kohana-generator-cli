@@ -110,12 +110,19 @@ function upper_first($string){
     return ucfirst(mb_strtolower($string));
 }
 
-function lang($keys = array()){
+function lang($keys=null){
     $string = "";
     if(!empty($keys))
     {
-        foreach ($keys as $key){
-            $string .= I18n::get($key, "generator-".I18n::$lang)." ";
+        if(is_array($keys))
+        {
+            foreach ($keys as $key){
+                $string .= I18n::get($key, "generator-".I18n::$lang)." ";
+            }
+        }
+        else
+        {
+            $string = I18n::get($keys, "generator-".I18n::$lang)." ";
         }
     }
     return trim($string);
@@ -323,6 +330,12 @@ function create_file($path, $file, $data=null, $overwrite=false){
     {
         file_put_contents($path.DIRECTORY_SEPARATOR.$file, $data);
     }
+}
+
+function todo($comment = null) {
+        return "    /**
+     * @todo $comment
+     */";
 }
 
 function cache_dir(){

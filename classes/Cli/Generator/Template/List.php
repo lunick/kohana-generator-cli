@@ -33,6 +33,7 @@ final class Cli_Generator_Template_List extends Cli_Generator_Abstract_Template 
                 
                 $writer->set_dir(views_dir().$this->get_subdir().DIRECTORY_SEPARATOR.$orm->get_name())
                         ->set_file("list.php")
+                        ->set_package("view")
                         ->php_head_enable()
                         ->add_row("?>")
                         ->add_row("<p><?php echo HTML::anchor(\$route.'/new', '<i class=\"icon-plus icon-white\"></i> '.__('action.create_new'), array('class' => 'btn btn-success')); ?></p>")

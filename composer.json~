@@ -1,0 +1,17 @@
+{
+    "name": "burningface",
+    "type": "kohana-module",
+    "description": "A Kohana generator with short commands, help generate items from database",
+    "keywords": ["kohana", "kohana module", "generator", "orm", "crud", "view"],
+    "homepage": "https://github.com/burningface/kohana-generator-cli",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "burningface",
+            "email": "burningface11@gmail.com"
+        }
+    ],
+    "require": {
+        "composer/installers": "*"
+    }
+}

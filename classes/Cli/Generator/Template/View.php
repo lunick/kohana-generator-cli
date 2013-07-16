@@ -19,6 +19,7 @@ final class Cli_Generator_Template_View extends Cli_Generator_Abstract_Template 
         
         $writer->set_dir(views_dir().$this->get_subdir())
                 ->set_file(mb_strtolower($this->get_name()).".php")
+                ->set_package("view")
                 ->php_head_enable()
                 ->add_row("?>")
                 ->add_row("<div class=\"hero-unit\">")

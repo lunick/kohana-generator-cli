@@ -56,6 +56,7 @@ final class Cli_Generator_Template_Form extends Cli_Generator_Abstract_Template 
                 
                 $writer->set_dir(views_dir().$this->get_subdir().DIRECTORY_SEPARATOR.$orm->get_name())
                         ->set_file("form.php")
+                        ->set_package("view")
                         ->php_head_enable()
                         ->add_row("?>")
                         ->add_row("<p>")

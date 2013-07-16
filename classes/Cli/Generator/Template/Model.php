@@ -22,6 +22,7 @@ final class Cli_Generator_Template_Model extends Cli_Generator_Abstract_Template
         
         $writer->set_dir(model_dir())
                 ->set_file($orm->get_class_name().".php")
+                ->set_package("Model")
                 ->php_head_enable()
                 ->add_row("class Model_" . $orm->get_class_name() . " extends Model {")
                 ->add_row()      

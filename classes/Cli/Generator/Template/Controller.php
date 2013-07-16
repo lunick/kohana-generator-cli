@@ -20,6 +20,7 @@ final class Cli_Generator_Template_Controller extends Cli_Generator_Abstract_Con
                 
         $writer->set_dir(controller_dir().upper_first($this->get_subdir()).DIRECTORY_SEPARATOR)
                     ->set_file(upper_first($this->get_options_obj()->name).".php")
+                    ->set_package("Controller")
                     ->php_head_enable()
                     ->add_row("class Controller_" . path_to_class(clean_path($this->get_subdir().DIRECTORY_SEPARATOR.$this->get_options_obj()->name)) . " extends Controller {")
                     ->add_row();

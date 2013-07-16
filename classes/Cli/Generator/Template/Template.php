@@ -19,6 +19,7 @@ final class Cli_Generator_Template_Template extends Cli_Generator_Abstract_Templ
         
         $writer->set_dir(views_dir().$this->get_subdir())
                 ->set_file($this->get_name().".php")
+                ->set_package("view")
                 ->php_head_enable()
                 ->add_row("?>")
                 ->add_row("<!DOCTYPE html>")

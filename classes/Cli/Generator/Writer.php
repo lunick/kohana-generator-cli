@@ -9,14 +9,21 @@
  */
 final class Cli_Generator_Writer {
     
-    protected $generated_file;
-    protected $generated_backup;
-    protected $error;
-    protected $file;
-    protected $dir;
+    private $generated_file;
+    private $generated_backup;
+    private $error;
+    private $file;
+    private $dir;
+    private $package;
     private $php_head = false;
     private $rows = array();
-    
+        
+    public function set_package($package) {
+        $this->package = $package;
+        return $this;
+    }
+
+        
     public function add_row($row = "", $space_num = 0) {
         $this->rows[] = space($space_num) . $row . PHP_EOL;
         return $this;
@@ -97,7 +104,7 @@ final class Cli_Generator_Writer {
             $data .= Cli_Util_ConfigReader::get_key("start_php_file").PHP_EOL;
             $data .= "<?php".PHP_EOL;
             $data .= "/**".PHP_EOL;
-            $data .= " * @package".PHP_EOL;
+            $data .= isset($this->package) ? " * @package $this->package".PHP_EOL : " * @package".PHP_EOL;
             $data .= " * @author " . Cli_Util_ConfigReader::get_key("author").PHP_EOL;
             $data .= " * @license " . Cli_Util_ConfigReader::get_key("license").PHP_EOL;
             $data .= " * @copyright (c) " . date("Y") . " " . Cli_Util_ConfigReader::get_key("author").PHP_EOL;

@@ -19,6 +19,7 @@ final class Cli_Generator_Template_I18n extends Cli_Generator_Abstract_Template 
                 
         $writer->set_dir(i18n_dir())
                ->set_file($this->get_name().".php")
+                ->set_package("i18n")
                ->php_head_enable()
                ->add_row("return array(")
                ->add_row()

@@ -15,7 +15,7 @@ abstract class Generator_Task extends Minion_Task {
     }
       
     protected function _execute(array $params) {
-        if(!empty($params))
+        if(!empty($params) && isset($params[1]))
         {
             $command = $params[1];
             $class = Generator_Register::get_class($command);
@@ -35,7 +35,10 @@ abstract class Generator_Task extends Minion_Task {
             {
                 call_user_func($callback, $callback_params);
             }
-            
+        }
+        else
+        {
+            Cli_Help::print_commands();
         }
     }
         
@@ -104,8 +107,6 @@ abstract class Generator_Task extends Minion_Task {
                         ->print_result();
             }catch(Exception $e){
                 println_error($e->getMessage());
-                println_error("File: ".$e->getFile());
-                println_error("Line: ".$e->getLine());
             }
             
         }
@@ -128,26 +129,11 @@ abstract class Generator_Task extends Minion_Task {
                 $this->template_class->run();
             }catch(Exception $e){
                 println_error($e->getMessage());
-                println_error("File: ".$e->getFile());
-                println_error("Line: ".$e->getLine());
             }
             
         }
     }
-    
-    protected function _help(array $params) {
-        print_info("Try: ");
-        println_param("php index.php command");
-        print_info("Or try: ");
-        println_param("php index.php command shortname");
-        print_info("For example: ");
-        println_param("php index.php command db:s");
-        print_info("For example: ");
-        println_param("php index.php command g:c");
-        print_info("For example: ");
-        println_param("php index.php command g:as");
-    }   
-    
+     
 }
 
 ?>

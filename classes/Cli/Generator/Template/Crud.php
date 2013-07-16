@@ -33,6 +33,7 @@ final class Cli_Generator_Template_Crud extends Cli_Generator_Abstract_Template{
         
         $writer = $this->get_new_writer();
         $writer->set_dir(controller_dir().upper_first($this->get_subdir()))
+                ->set_package("Controller")
                 ->php_head_enable()
                 ->set_file(upper_first($orm->get_name()).".php")
                 ->add_row("class Controller_" . path_to_class(clean_path($this->get_subdir().DIRECTORY_SEPARATOR.$name)) . " extends Controller_Template {")
@@ -51,7 +52,7 @@ final class Cli_Generator_Template_Crud extends Cli_Generator_Abstract_Template{
                 ->add_row()
 
                 // action_index
-                ->add_row(self::meta("action_index"))
+                ->add_row(todo("action_index"))
                 ->add_row("public function action_index()", 4)
                 ->add_row("{", 4)
                 ->add_row("\$view = View::factory(\$this->_list_view);", 8)
@@ -62,7 +63,7 @@ final class Cli_Generator_Template_Crud extends Cli_Generator_Abstract_Template{
                 ->add_row()
 
                 // action_new
-                ->add_row(self::meta("action_new"))
+                ->add_row(todo("action_new"))
                 ->add_row("public function action_new()", 4)
                 ->add_row("{", 4)
                 ->add_row("\$model = ORM::factory(\$this->_model);", 8)
@@ -101,7 +102,7 @@ final class Cli_Generator_Template_Crud extends Cli_Generator_Abstract_Template{
                 ->add_row()
 
                 // action_edit
-                ->add_row(self::meta("action_edit"))
+                ->add_row(todo("action_edit"))
                 ->add_row("public function action_edit()", 4)
                 ->add_row("{", 4)
                 ->add_row("\$id = \$this->request->param('id');", 8)
@@ -147,7 +148,7 @@ final class Cli_Generator_Template_Crud extends Cli_Generator_Abstract_Template{
                 ->add_row()
 
                 // action_show
-                ->add_row(self::meta("action_show"))
+                ->add_row(todo("action_show"))
                 ->add_row("public function action_show()", 4)
                 ->add_row("{", 4)
                 ->add_row("\$id = \$this->request->param('id');", 8)
@@ -168,7 +169,7 @@ final class Cli_Generator_Template_Crud extends Cli_Generator_Abstract_Template{
                 ->add_row()
 
                 // action_delete
-                ->add_row(self::meta("action_delete"))
+                ->add_row(todo("action_delete"))
                 ->add_row("public function action_delete()", 4)
                 ->add_row("{", 4)
                 ->add_row("if(\$this->request->method() === 'POST')", 8)
@@ -221,7 +222,7 @@ final class Cli_Generator_Template_Crud extends Cli_Generator_Abstract_Template{
         }
                 
     }
-
+    
     private function generate_view($class){
         $view = new $class;
         $view->set_name($this->get_name());
@@ -230,12 +231,6 @@ final class Cli_Generator_Template_Crud extends Cli_Generator_Abstract_Template{
         foreach($view->get_writers() as $writer){
             $this->add_writer($writer);
         }
-    }
-    
-    private static function meta($comment = null) {
-        return "    /**
-     * @method $comment
-     */";
     }
 
 }

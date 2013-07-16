@@ -15,9 +15,9 @@ final class Cli_Database_Orm {
         $driver = upper_first(Kohana::$config->load("database.default.type"));
         $driver_class = "Cli_Database_".$driver."_Driver";
         $this->driver = new $driver_class;
-        $table = $this->driver->real_table_name($table);
-        if($table !== false){
-            $this->table = $table;
+        $real_table = $this->driver->real_table_name($table);
+        if($real_table !== false){
+            $this->table = $real_table;
         }
         else
         {
