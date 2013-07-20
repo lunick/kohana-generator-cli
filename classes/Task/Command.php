@@ -16,7 +16,8 @@ class Task_Command extends Minion_Task {
         }
         else
         {
-            if(isset($params[1])){
+            if(isset($params[1]))
+            {
                 Cli_Help::print_help($params[1]);
             }
         }

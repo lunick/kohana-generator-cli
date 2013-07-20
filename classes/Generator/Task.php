@@ -58,13 +58,11 @@ abstract class Generator_Task extends Minion_Task {
                 if(!$this->template_class->get_options_obj()->is_skip($key)){
                     if($more)
                     {
-                        $line = read_generator_line($prompt->get_prompt($key).": ");
-                        if(0 < strlen($line)){ $value[] = $line; }
-
-                        while($read){
+                        do{
                             $line = read_generator_line($prompt->get_prompt($key).": ");
 
-                            if(0 < strlen($line)){
+                            if(0 < strlen($line))
+                            {
                                 $value[] = $line;
                             }
 
@@ -74,8 +72,7 @@ abstract class Generator_Task extends Minion_Task {
                                 $value = array();
                                 $read = false;
                             }
-                        }
-
+                        }while($read);
                     }
                     else
                     {
@@ -115,8 +112,8 @@ abstract class Generator_Task extends Minion_Task {
             $prompt = $this->template_class->get_prompt_obj();
 
             foreach ($prompt->get_options() as $key => $param){
-                if(!$this->template_class->get_options_obj()->is_skip($key)){
-                    
+                if(!$this->template_class->get_options_obj()->is_skip($key))
+                {
                     $line = read_generator_line($prompt->get_prompt($key).": ");
                     if(0 < strlen($line))
                     {
