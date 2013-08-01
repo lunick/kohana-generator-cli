@@ -1,6 +1,8 @@
 {
-    "name": "burningface/kohana-generator-cli",
+    "name": "burningface/generator",
+    "type" :"kohana-module",
     "description": "Helps generate models from database and other stuffs",
+    "homepage": "https://github.com/burningface/kohana-generator-cli",
     "license": "MIT",
     "authors": [
         {
@@ -8,7 +10,6 @@
             "email": "burningface11@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
 
     }
