@@ -1,5 +1,5 @@
 {
-    "name": "burningface/generator",
+    "name": "burningface/kohana-generator-cli",
     "type" :"kohana-module",
     "description": "Helps generate models from database and other stuffs",
     "homepage": "https://github.com/burningface/kohana-generator-cli",
@@ -11,6 +11,6 @@
         }
     ],
     "require": {
-
+        "php": ">=5.3.3"
     }
 }
