@@ -1,0 +1,15 @@
+{
+    "name": "burningface/kohana-generator-cli",
+    "description": "Helps generate models from database and other stuffs",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Burningface",
+            "email": "burningface11@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+
+    }
+}
