@@ -1,7 +1,8 @@
 {
-    "name": "burningface/kohana-generator-cli",
+    "name": "burningface/generator",
     "type" :"kohana-module",
-    "description": "Helps generate models from database and other stuffs",
+    "description": "Help generate models and views from database",
+    "keywords": ["kohana", "generator", "orm", "model"],
     "homepage": "https://github.com/burningface/kohana-generator-cli",
     "license": "MIT",
     "authors": [
@@ -11,6 +12,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3"
+            "php" :">=5.3.0",
+            "composer/installers":"*"
     }
 }
